@@ -3,8 +3,7 @@ import { BiArrowBack } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 
 const Shipping = () => {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [shippingInfo, setShippingInfo] = useState({
     address: "",
@@ -14,13 +13,15 @@ const Shipping = () => {
     pinCode: "",
   });
 
-  const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setShippingInfo((prev) => ({ ...prev, [e.target.name]: e.target.value}))
+  const changeHandler = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setShippingInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   return (
     <div className="shipping">
-      <button className="back-btn" onClick={ ()=> navigate("/cart") }>
+      <button className="back-btn" onClick={() => navigate("/cart")}>
         <BiArrowBack />
       </button>
 
@@ -51,16 +52,22 @@ const Shipping = () => {
           required
         />
 
-        <select 
-            name="country"
-            value={shippingInfo.country}
-            onChange={changeHandler}
-            required
+        <select
+          name="country"
+          value={shippingInfo.country}
+          onChange={changeHandler}
+          required
         >
-            <option value="">Choose Country</option>
-            <option value="Pakistan">Pakistan</option>
+          <option value="">Choose Country</option>
+          <option value="Pakistan">Pakistan</option>
         </select>
-        <input type="text" placeholder="Pin Code" name="PinCode" value={shippingInfo.pinCode} onChange={changeHandler} />
+        <input
+          type="number"
+          placeholder="Pin Code"
+          name="PinCode"
+          value={shippingInfo.pinCode}
+          onChange={changeHandler}
+        />
         <button type="submit">Pay Now</button>
       </form>
     </div>

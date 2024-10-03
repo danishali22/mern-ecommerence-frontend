@@ -37,6 +37,7 @@ $color3: rgb(0, 87, 158);
 @import "home";
 @import "cart";
 @import "shipping";
+@import "login";
 
 @import "admin-styles/dashboard";
 @import "admin-styles/products";
@@ -79,6 +80,12 @@ $color3: rgb(0, 87, 158);
       @include flex(column, flex-start, center, 0.25rem);
     }
   }
+}
+
+.heading{
+  @include heading;
+  margin: 1rem 0;
+  text-align: center;
 }
 
 .admin-container {
