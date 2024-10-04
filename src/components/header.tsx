@@ -3,7 +3,7 @@ import {FaSearch, FaShoppingBag, FaSignInAlt, FaSignOutAlt, FaUser} from 'react-
 import { useState } from 'react';
 
 const Header = () => {
-  const user = {_id: "sdf", role: "admin"}
+  const user = {_id: "", role: "admin"}
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const hanldeLogout = () => {
