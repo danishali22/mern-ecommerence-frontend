@@ -1,10 +1,18 @@
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { auth } from "../firebase";
 
 const Login = () => {
 
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
+
+  const loginHandler = async () => {
+    console.log("Button")
+    const provider = new GoogleAuthProvider();
+    const {user} = await signInWithPopup(auth, provider);
+  }
 
   return (
     <div className="login">
@@ -24,7 +32,7 @@ const Login = () => {
             </div>
             <div>
                 <p>Already Signed In Once</p>
-                <button>
+                <button onClick={loginHandler}>
                     <FcGoogle /> <span>Sign in with Google</span>
                 </button>
             </div>
