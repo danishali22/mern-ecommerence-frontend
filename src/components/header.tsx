@@ -1,4 +1,4 @@
-import {Link, redirect} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {FaSearch, FaShoppingBag, FaSignInAlt, FaSignOutAlt, FaUser} from 'react-icons/fa';
 import { useState } from 'react';
 import { User } from '../types/types';
