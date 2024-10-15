@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import ProductCard from "../components/product-card";
 import { useLatestProductsQuery } from "../redux/api/productApi";
-import Loader from "../components/loader";
+import { Skeleton } from "../components/loader";
 import toast from "react-hot-toast";
 
 const Home = () => {
@@ -21,7 +21,8 @@ const Home = () => {
         </Link>
       </h1>
       <main>
-      {isLoading && <Loader />}
+      {isLoading && 
+      <Skeleton />}
         {data?.data.map((i) => (
           <ProductCard
             key={i._id}
