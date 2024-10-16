@@ -1,17 +1,44 @@
 import { useState } from "react";
 import ProductCard from "../components/product-card";
+import { CustomError } from "../types/api-types";
+import toast from "react-hot-toast";
+import {
+  useCategroriesQuery,
+  useSearchProductsQuery,
+} from "../redux/api/productApi";
+import { Skeleton } from "../components/loader";
 
 const addToCartHandler = () => {};
 
 const Search = () => {
+  const { data, isError, isLoading, error } = useCategroriesQuery("");
+
+  const err = error as CustomError;
+  if (isError) {
+    toast.error(err.data.message);
+  }
+
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
   const [category, setCategory] = useState("");
   const [maxPrice, setMaxPrice] = useState(10000);
   const [page, setPage] = useState(1);
 
+  const {
+    data: searchedProducts,
+    isLoading: productsLoading,
+    isError: productsIsError,
+    error: productsError,
+  } = useSearchProductsQuery({ search, category, sort, page, price: maxPrice });
+
+  const producterr = productsError as CustomError;
+  if(productsIsError){
+    toast.error(producterr.data.message);
+  }
+
   const isPrevPage = page > 1;
-  const isNextPage = page < 4;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+  const isNextPage = page < searchedProducts?.total_pages!;
 
   return (
     <div className="product-search-page">
@@ -37,10 +64,13 @@ const Search = () => {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="">None</option>
-            <option value="sample_1">Sample 1</option>
-            <option value="sample_2">Sample 2</option>
-            <option value="sample_3">Sample 3</option>
+            <option value="all">ALL</option>
+            {!isLoading &&
+              data?.data.map((i) => (
+                <option value={i} key={i}>
+                  {i.toLocaleUpperCase()}
+                </option>
+              ))}
           </select>
         </div>
       </aside>
@@ -53,22 +83,43 @@ const Search = () => {
           onChange={(e) => setSearch(e.target.value)}
         />
         <div className="search-product-list">
-          <ProductCard
-            productId="edfd"
-            photo="https://m.media-amazon.com/images/I/619L9jf3-rL._AC_SX679_.jpg"
-            name="Macbook Air Pro"
-            price={450000}
-            stock={255}
-            handler={addToCartHandler}
-          />
+          {productsLoading ? (
+            <Skeleton length={10} />
+          ) : (
+            searchedProducts?.data.map((i) => (
+              <ProductCard
+                key={i._id}
+                productId={i._id}
+                photo={i.photo}
+                name={i.name}
+                price={i.price}
+                stock={i.stock}
+                handler={addToCartHandler}
+              />
+            ))
+          )}
         </div>
-        <article>
-          <button disabled={!isPrevPage} onClick={() => setPage((prev) => prev - 1)}>Prev</button>
+        {
+          searchedProducts && searchedProducts.total_pages > 1 && (
+            <article>
+          <button
+            disabled={!isPrevPage}
+            onClick={() => setPage((prev) => prev - 1)}
+          >
+            Prev
+          </button>
           <span>
-            {page} of {4}
+            {page} of {searchedProducts.total_pages}
           </span>
-          <button disabled={!isNextPage} onClick={() => setPage((next) => next + 1)}>Next</button>
+          <button
+            disabled={!isNextPage}
+            onClick={() => setPage((next) => next + 1)}
+          >
+            Next
+          </button>
         </article>
+          )
+        }
       </main>
     </div>
   );
