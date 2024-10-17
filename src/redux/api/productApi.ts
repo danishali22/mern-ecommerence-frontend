@@ -1,5 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { AllCategoriesResponse, AllProductsResponse, MessageResponse, NewProductRequest, SearchProductsRequest, SearchProductsResponse } from "../../types/api-types";
+import {
+  AllCategoriesResponse,
+  AllProductsResponse,
+  DeleteProductRequest,
+  MessageResponse,
+  NewProductRequest,
+  ProductDetailsResponse,
+  SearchProductsRequest,
+  SearchProductsResponse,
+  UpdateProductRequest,
+  UpdateProductResponse,
+} from "../../types/api-types";
 
 export const productApi = createApi({
   reducerPath: "productApi",
@@ -13,35 +24,66 @@ export const productApi = createApi({
       providesTags: ["product"],
     }),
     allProducts: builder.query<AllProductsResponse, string>({
-        query: (id) => `admin-products/?id=${id}`,
-        providesTags: ["product"],
+      query: (id) => `admin-products/?id=${id}`,
+      providesTags: ["product"],
     }),
     categrories: builder.query<AllCategoriesResponse, string>({
       query: () => "categories",
       providesTags: ["product"],
     }),
-    searchProducts: builder.query<SearchProductsResponse, SearchProductsRequest>({
-      query: ({search, category, price, sort, page}) => {
+    searchProducts: builder.query<
+      SearchProductsResponse,
+      SearchProductsRequest
+    >({
+      query: ({ search, category, price, sort, page }) => {
         let base = `search?page=${page}`;
 
-        if(search) base += `&search=${search}`;
-        if(category) base += `&category=${category}`;
-        if(price) base += `&price=${price}`;
-        if(sort) base += `&sort=${sort}`;
+        if (search) base += `&search=${search}`;
+        if (category) base += `&category=${category}`;
+        if (price) base += `&price=${price}`;
+        if (sort) base += `&sort=${sort}`;
 
         return base;
       },
       providesTags: ["product"],
     }),
     newProduct: builder.mutation<MessageResponse, NewProductRequest>({
-      query: ({id, formData}) => ({
+      query: ({ id, formData }) => ({
         url: `new?id=${id}`,
         method: "POST",
         body: formData,
       }),
       invalidatesTags: ["product"],
     }),
+    productDetails: builder.query<ProductDetailsResponse, string>({
+      query: (id) => id,
+      providesTags: ["product"],
+    }),
+    updateProduct: builder.mutation<UpdateProductResponse, UpdateProductRequest>({
+      query: ({userId, productId, formData}) => ({
+        url: `${productId}?id=${userId}`,
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: ["product"],
+    }),
+    deleteProduct: builder.mutation<MessageResponse, DeleteProductRequest>({
+      query: ({userId, productId}) => ({
+        url: `${productId}?id=${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["product"],
+    }),
   }),
 });
 
-export const {useLatestProductsQuery, useAllProductsQuery, useCategroriesQuery, useSearchProductsQuery, useNewProductMutation} = productApi
+export const {
+  useLatestProductsQuery,
+  useAllProductsQuery,
+  useCategroriesQuery,
+  useSearchProductsQuery,
+  useNewProductMutation,
+  useProductDetailsQuery,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+} = productApi;

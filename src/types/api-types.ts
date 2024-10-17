@@ -46,3 +46,26 @@ export type NewProductRequest = {
     id: string,
     formData: FormData,
 }
+
+export type ProductDetailsResponse = {
+    success: boolean,
+    data: Product,
+    message: string,
+}
+
+export type UpdateProductResponse = {
+    success: boolean,
+    data: Product[],
+    message: string,
+}
+
+export type UpdateProductRequest = {
+    userId: string,
+    productId: string,
+    formData: FormData,
+}
+
+export type DeleteProductRequest = {
+    userId: string,
+    productId: string,
+}
