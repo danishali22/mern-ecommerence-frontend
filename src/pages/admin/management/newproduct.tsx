@@ -1,13 +1,46 @@
 import { ChangeEvent, useState } from "react";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
+import { useSelector } from "react-redux";
+import { UserReducerInitialState } from "../../../types/reducer-types";
+import { useNewProductMutation } from "../../../redux/api/productApi";
+import { useNavigate } from "react-router-dom";
+import { responseToast } from "../../../utils/features";
 
 const NewProduct = () => {
+  const {user} = useSelector(
+    (state: { userReducer: UserReducerInitialState }) => state.userReducer
+  );
+  
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [price, setPrice] = useState<number>(1000);
   const [stock, setStock] = useState<number>(1);
   const [photoPrev, setPhotoPrev] = useState<string>("");
   const [photo, setPhoto] = useState<File>();
+
+  const navigate = useNavigate();
+
+  const [newProduct] = useNewProductMutation();
+
+  const submitHandler = async (e:  ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if(!name || !category || !price || !stock || !photo) return;
+
+    const formData = new FormData();
+
+    formData.set("name", name);
+    formData.set("category", category);
+    formData.set("photo", photo);
+    formData.set("price", price.toString());
+    formData.set("stock", stock.toString());
+
+    const res = await newProduct({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+      id: user?._id!,
+      formData: formData,
+    });
+    responseToast(res, navigate, "/admin/product");
+  }
 
   const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = e.target.files?.[0];
@@ -24,13 +57,14 @@ const NewProduct = () => {
       };
     }
   };
+  
 
   return (
     <div className="admin-container">
       <AdminSidebar />
       <main className="product-management">
         <article>
-          <form>
+          <form onSubmit={submitHandler}>
             <h2>New Product</h2>
             <div>
               <label>Name</label>
@@ -39,6 +73,7 @@ const NewProduct = () => {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
               />
             </div>
             <div>
@@ -48,6 +83,7 @@ const NewProduct = () => {
                 placeholder="Price"
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
+                required
               />
             </div>
             <div>
@@ -57,6 +93,7 @@ const NewProduct = () => {
                 placeholder="Stock"
                 value={stock}
                 onChange={(e) => setStock(Number(e.target.value))}
+                required
               />
             </div>
 
@@ -67,12 +104,13 @@ const NewProduct = () => {
                 placeholder="eg. laptop, camera etc"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
+                required
               />
             </div>
 
             <div>
               <label>Photo</label>
-              <input type="file" onChange={changeImageHandler} />
+              <input type="file" onChange={changeImageHandler} required />
             </div>
 
             {photoPrev && <img src={photoPrev} alt="New Image" />}

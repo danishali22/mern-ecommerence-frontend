@@ -41,3 +41,8 @@ export type SearchProductsRequest = {
     price: number,
     page: number,
 }
+
+export type NewProductRequest = {
+    id: string,
+    formData: FormData,
+}

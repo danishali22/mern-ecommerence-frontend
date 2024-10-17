@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
-import Loader from "./components/loader";
+import { Skeleton } from "./components/loader";
 import Header from "./components/header";
 import { Toaster } from "react-hot-toast";
 import { onAuthStateChanged } from "firebase/auth";
@@ -56,12 +56,12 @@ const App = () => {
   }, []);
 
   return loading ? (
-    <Loader />
+    <Skeleton length={10} />
   ) : (
     <Router>
       {/* Header  */}
       <Header user={user} />
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<Skeleton length={10} />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
