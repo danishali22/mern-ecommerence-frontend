@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
