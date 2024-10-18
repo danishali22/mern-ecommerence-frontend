@@ -1,50 +1,70 @@
 import { useEffect, useState } from "react";
 import { VscError } from "react-icons/vsc";
-import CartItem from "../components/cart-item";
+import CartItemCard from "../components/cart-item";
 import { Link } from "react-router-dom";
-
-const cartItems = [
-  {
-    productId: "edfd",
-    photo: "https://m.media-amazon.com/images/I/619L9jf3-rL._AC_SX679_.jpg",
-    name: "Macbook Air Pro",
-    price: 450000,
-    quantity: 5,
-  }
-]
-const subTotal = 4000;
-const tax = Math.round(subTotal * 0.18);
-const shippingCharges = 500;
-const discount = 400;
-const total = subTotal + tax + shippingCharges - discount;
-
+import { useDispatch, useSelector } from "react-redux";
+import { CartReducerInitialState } from "../types/reducer-types";
+import { CartItem } from "../types/types";
+import { addToCart, calculatePrice, removeCartItem } from "../redux/reducer/cartItemReducer";
 
 const Cart = () => {
+  const { cartItems, subTotal, tax, discount, shippingCharges, total } =
+    useSelector(
+      (state: { cartItem: CartReducerInitialState }) => state.cartItem
+    );
+
   const [couponCode, setCouponCode] = useState<string>("");
   const [isValidCouponCode, setIsValidCouponCode] = useState<boolean>(false);
 
+  const dispatch = useDispatch();
+
+  const incrementHandler = (cartItem: CartItem) => {
+    if(cartItem.quantity >= cartItem.stock) return;
+    dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity + 1 }));
+  };
+  
+  const decrementHandler = (cartItem: CartItem) => {
+    if(cartItem.quantity <= 1) return;
+    dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity - 1 }));
+  };
+
+  const removeHandler = (productId: string) => {
+    dispatch(removeCartItem(productId));
+  };
+
   useEffect(() => {
     const timeOutId = setTimeout(() => {
-      if(Math.random() > 0.5) setIsValidCouponCode(true);
+      if (Math.random() > 0.5) setIsValidCouponCode(true);
       else setIsValidCouponCode(false);
     }, 1000);
-  
+
     return () => {
       clearTimeout(timeOutId);
       setIsValidCouponCode(false);
-    }
-  }, [couponCode])
+    };
+  }, [couponCode]);
+
+  useEffect(() => {
+    dispatch(calculatePrice())
+  }, [cartItems])
   
 
   return (
     <div className="cart">
       <main>
-        {
-          cartItems.length > 0 ? 
+        {cartItems.length > 0 ? (
           cartItems.map((i, index) => (
-            <CartItem key={index} cartItem={i} />
-          )) : <h1>No Items Added</h1>
-        }
+            <CartItemCard
+              key={index}
+              cartItem={i}
+              incrementHandler={incrementHandler}
+              decrementHandler={decrementHandler}
+              removeHandler={removeHandler}
+            />
+          ))
+        ) : (
+          <h1>No Items Added</h1>
+        )}
       </main>
       <aside>
         <p>Subtotal: Rs {subTotal}</p>
@@ -60,15 +80,18 @@ const Cart = () => {
           onChange={(e) => setCouponCode(e.target.value)}
           placeholder="Coupon Code"
         />
-        {
-          couponCode && (isValidCouponCode ? (
-            <span className="green">Rs {discount} is off using the <code>{couponCode}</code></span>
+        {couponCode &&
+          (isValidCouponCode ? (
+            <span className="green">
+              Rs {discount} is off using the <code>{couponCode}</code>
+            </span>
           ) : (
-            <span className="red">Invalid Coupon <VscError /> </span>
-          ))
-        }
+            <span className="red">
+              Invalid Coupon <VscError />{" "}
+            </span>
+          ))}
 
-        { cartItems.length > 0 && <Link to={"/shipping"}> Checkout </Link> }
+        {cartItems.length > 0 && <Link to={"/shipping"}> Checkout </Link>}
       </aside>
     </div>
   );
