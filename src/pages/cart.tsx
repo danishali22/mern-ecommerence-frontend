@@ -5,7 +5,14 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { CartReducerInitialState } from "../types/reducer-types";
 import { CartItem } from "../types/types";
-import { addToCart, calculatePrice, removeCartItem } from "../redux/reducer/cartItemReducer";
+import {
+  addToCart,
+  calculatePrice,
+  discountApplied,
+  removeCartItem,
+} from "../redux/reducer/cartItemReducer";
+import axios from "axios";
+import { server } from "../redux/store";
 
 const Cart = () => {
   const { cartItems, subTotal, tax, discount, shippingCharges, total } =
@@ -19,12 +26,12 @@ const Cart = () => {
   const dispatch = useDispatch();
 
   const incrementHandler = (cartItem: CartItem) => {
-    if(cartItem.quantity >= cartItem.stock) return;
+    if (cartItem.quantity >= cartItem.stock) return;
     dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity + 1 }));
   };
-  
+
   const decrementHandler = (cartItem: CartItem) => {
-    if(cartItem.quantity <= 1) return;
+    if (cartItem.quantity <= 1) return;
     dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity - 1 }));
   };
 
@@ -33,21 +40,34 @@ const Cart = () => {
   };
 
   useEffect(() => {
+
+    const {token: CancelToken, cancel} = axios.CancelToken.source();
+
     const timeOutId = setTimeout(() => {
-      if (Math.random() > 0.5) setIsValidCouponCode(true);
-      else setIsValidCouponCode(false);
+      axios
+        .get(`${server}/api/v1/payment/discount?code=${couponCode}`, CancelToken)
+        .then((res) => {
+          dispatch(discountApplied(res.data.discount));
+          setIsValidCouponCode(true);
+          dispatch(calculatePrice());
+        })
+        .catch(() => {
+          dispatch(discountApplied(0));
+          setIsValidCouponCode(false);
+          dispatch(calculatePrice());
+        });
     }, 1000);
 
     return () => {
       clearTimeout(timeOutId);
+      cancel();
       setIsValidCouponCode(false);
     };
   }, [couponCode]);
 
   useEffect(() => {
-    dispatch(calculatePrice())
-  }, [cartItems])
-  
+    dispatch(calculatePrice());
+  }, [cartItems]);
 
   return (
     <div className="cart">
