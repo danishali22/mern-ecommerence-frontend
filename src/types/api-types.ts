@@ -83,7 +83,7 @@ export type NewOrderRequest = {
 
 export type AllOrdersResponse = {
     success: string,
-    orders: Order[],
+    data: Order[],
     message: string,
 }
 

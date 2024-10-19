@@ -1,7 +1,13 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import TableHOC from "../components/admin/TableHOC";
 import { Column } from "react-table";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { UserReducerInitialState } from "../types/reducer-types";
+import { useAllOrdersQuery } from "../redux/api/order";
+import { CustomError } from "../types/api-types";
+import toast from "react-hot-toast";
+import { Skeleton } from "../components/loader";
 
 type DataType = {
   _id: string;
@@ -40,21 +46,52 @@ const column: Column<DataType>[] = [
 ];
 
 const Orders = () => {
-  const [rows] = useState<DataType[]>([
-    {
-      _id: "sdwd",
-      amount: 12000,
-      quantity: 4,
-      discount: 400,
-      status: <span className="red">Processing</span>,
-      action: <Link to={`/order/sdwd`}>View</Link>,
-    },
-  ]);
+  const { user } = useSelector(
+    (state: { userReducer: UserReducerInitialState }) => state.userReducer
+  );
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+  const { data, isLoading, isError, error } = useAllOrdersQuery(user?._id!);
+
+  console.log(data);
+
+  const err = error as CustomError;
+  if (isError) {
+    toast.error(err.data.message);
+  }
+
+  const [rows, setRows] = useState<DataType[]>([]);
+
+  useEffect(() => {
+    if (data && data.data)
+      setRows(
+        data.data.map((i) => ({
+          _id: i._id,
+          amount: i.total,
+          discount: i.discount,
+          quantity: i.orderItems.length,
+          status: (
+            <span
+              className={
+                i.status === "Processing"
+                  ? "red"
+                  : i.status === "Shipped"
+                  ? "green"
+                  : "purple"
+              }
+            >
+              {i.status}
+            </span>
+          ),
+          action: <Link to={`/order/${i._id}`}>Manage</Link>,
+        }))
+      );
+  }, [data]);
+  
   const Table = TableHOC<DataType>(
     column,
     rows,
-    "dasboard0-produc-box",
+    "dasboard-produc-box",
     "Orders",
     rows.length > 6
   )();
@@ -62,7 +99,7 @@ const Orders = () => {
   return (
     <div className="container">
       <h1>My Orders</h1>
-      {Table}
+      <main>{isLoading ? <Skeleton length={20}/> : Table}</main>
     </div>
   );
 };
