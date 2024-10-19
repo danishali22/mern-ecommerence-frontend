@@ -4,7 +4,7 @@ import { Column } from "react-table";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { UserReducerInitialState } from "../types/reducer-types";
-import { useAllOrdersQuery } from "../redux/api/order";
+import { useMyOrdersQuery } from "../redux/api/order";
 import { CustomError } from "../types/api-types";
 import toast from "react-hot-toast";
 import { Skeleton } from "../components/loader";
@@ -51,9 +51,7 @@ const Orders = () => {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-  const { data, isLoading, isError, error } = useAllOrdersQuery(user?._id!);
-
-  console.log(data);
+  const { data, isLoading, isError, error } = useMyOrdersQuery(user?._id!);
 
   const err = error as CustomError;
   if (isError) {
