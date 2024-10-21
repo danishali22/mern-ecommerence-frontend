@@ -40,7 +40,7 @@ const Dashboard = () => {
               <BsSearch />
               <input type="text" placeholder="Search for data, users, docs" />
               <FaRegBell />
-              <img src={userImg} alt="User" />
+              <img src={user?.photo || userImg} alt="User" />
             </div>
 
             <section className="widget-container">
@@ -76,8 +76,8 @@ const Dashboard = () => {
               <div className="revenue-chart">
                 <h2>Revenue & Transaction</h2>
                 <BarChart
-                  data_2={[300, 144, 433, 655, 237, 755, 190]}
-                  data_1={[200, 444, 343, 556, 778, 455, 990]}
+                  data_2={stats?.chart.revenue!}
+                  data_1={stats?.chart.order!}
                   title_1="Revenue"
                   title_2="Transaction"
                   bgColor_1="rgb(0, 115, 255)"
@@ -109,7 +109,7 @@ const Dashboard = () => {
                 <h2>Gender Ratio</h2>
                 <DoughnutChart
                   labels={["Female", "Male"]}
-                  data={[12, 19]}
+                  data={[stats?.userRatio.female!, stats?.userRatio.male! ]}
                   backgroundColor={[
                     "hsl(340, 82%, 56%)",
                     "rgba(53, 162, 235, 0.8)",
