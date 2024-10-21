@@ -1,4 +1,4 @@
-import { CartItem, Order, Product, ShippingInfo, User } from "./types"
+import { Bar, CartItem, Line, Order, Pie, Product, ShippingInfo, Stats, User } from "./types"
 
 export type CustomError = {
     status: number,
@@ -19,6 +19,11 @@ export type UserResponse = {
     message: string,
 }
 
+export type AllUsersResponse = {
+    success: boolean,
+    data: User[],
+}
+
 export type AllProductsResponse = {
     success: boolean,
     data: Product[],
@@ -32,6 +37,37 @@ export type AllCategoriesResponse = {
 export type SearchProductsResponse = AllProductsResponse & {
     total_pages: number,
     message: string,
+}
+
+
+export type AllOrdersResponse = {
+    success: string,
+    data: Order[],
+    message: string,
+}
+
+export type OrderDetailsResponse = {
+    success: string,
+    data: Order,
+    message: string,
+}
+
+export type StatsResponse = {
+    success: boolean,
+    data: Stats,
+}
+
+export type PieChartResponse = {
+    success: boolean,
+    data: Pie,
+}
+export type BarChartResponse = {
+    success: boolean,
+    data: Bar,
+}
+export type LineChartResponse = {
+    success: boolean,
+    data: Line,
 }
 
 export type SearchProductsRequest = {
@@ -70,6 +106,11 @@ export type DeleteProductRequest = {
     productId: string,
 }
 
+export type DeleteUserRequest = {
+    userId: string,
+    adminUserId: string,
+}
+
 export type NewOrderRequest = {
     shippingInfo: ShippingInfo,
     orderItems: CartItem[],
@@ -79,19 +120,7 @@ export type NewOrderRequest = {
     discount: number,
     total: number,
     user: string,
-}
-
-export type AllOrdersResponse = {
-    success: string,
-    data: Order[],
-    message: string,
-}
-
-export type OrderDetailsResponse = {
-    success: string,
-    data: Order,
-    message: string,
-}
+} 
 
 export type UpdateOrderRequest = {
     orderId: string,
