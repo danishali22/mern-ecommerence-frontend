@@ -4,7 +4,7 @@ import type { CartItem, ShippingInfo } from "../../types/types";
 const initialState = {
   loading: false,
   cartItems: [],
-  subTotal: 0,
+  subtotal: 0,
   tax: 0,
   shippingCharges: 0,
   discount: 0,
@@ -19,7 +19,7 @@ const initialState = {
 };
 
 export const cartReducer = createSlice({
-  name: "cartItem",
+  name: "cartReducer",
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
@@ -41,24 +41,25 @@ export const cartReducer = createSlice({
       state.loading = false;
     },
     calculatePrice: (state) => {
-      const subTotal = state.cartItems.reduce(
+      const subtotal = state.cartItems.reduce(
         (total, item) => total + item.price * item.quantity,
         0
       );
-      state.subTotal = subTotal;
-      state.shippingCharges = state.subTotal > 1000 ? 0 : 200;
-      state.tax = Math.round(state.subTotal * 0.18);
+      state.subtotal = subtotal;
+      state.shippingCharges = state.subtotal > 1000 ? 0 : 200;
+      state.tax = Math.round(state.subtotal * 0.18);
       state.total =
-        state.subTotal + state.tax + state.shippingCharges - state.discount;
+        state.subtotal + state.tax + state.shippingCharges - state.discount;
     },
     discountApplied: (state, action: PayloadAction<number>) => {
       state.discount = action.payload;
     },
     saveShippingInfo: (state, action: PayloadAction<ShippingInfo>) => {
       state.shippingInfo = action.payload;
-    }
+    },
+    resetCart: () => initialState,
   },
 });
 
-export const { addToCart, removeCartItem, calculatePrice, discountApplied } =
+export const { addToCart, removeCartItem, calculatePrice, discountApplied, saveShippingInfo, resetCart } =
   cartReducer.actions;

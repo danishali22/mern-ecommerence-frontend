@@ -8,6 +8,7 @@ import { useMyOrdersQuery } from "../redux/api/order";
 import { CustomError } from "../types/api-types";
 import toast from "react-hot-toast";
 import { Skeleton } from "../components/loader";
+import { RootState } from "../redux/store";
 
 type DataType = {
   _id: string;
@@ -47,7 +48,7 @@ const column: Column<DataType>[] = [
 
 const Orders = () => {
   const { user } = useSelector(
-    (state: { userReducer: UserReducerInitialState }) => state.userReducer
+    (state: RootState) => state.userReducer
   );
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain

@@ -3,7 +3,6 @@ import { VscError } from "react-icons/vsc";
 import CartItemCard from "../components/cart-item";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { CartReducerInitialState } from "../types/reducer-types";
 import { CartItem } from "../types/types";
 import {
   addToCart,
@@ -12,13 +11,17 @@ import {
   removeCartItem,
 } from "../redux/reducer/cartItemReducer";
 import axios from "axios";
-import { server } from "../redux/store";
+import { RootState, server } from "../redux/store";
 
 const Cart = () => {
-  const { cartItems, subTotal, tax, discount, shippingCharges, total } =
-    useSelector(
-      (state: { cartItem: CartReducerInitialState }) => state.cartItem
-    );
+  const {
+    cartItems,
+    subtotal,
+    tax,
+    shippingCharges,
+    discount,
+    total,
+  } = useSelector((state: RootState) => state.cartReducer);
 
   const [couponCode, setCouponCode] = useState<string>("");
   const [isValidCouponCode, setIsValidCouponCode] = useState<boolean>(false);
@@ -87,7 +90,7 @@ const Cart = () => {
         )}
       </main>
       <aside>
-        <p>Subtotal: Rs {subTotal}</p>
+        <p>subtotal: Rs {subtotal}</p>
         <p>Shipping: Rs {shippingCharges}</p>
         <p>Tax: Rs {tax}</p>
         <p>

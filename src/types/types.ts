@@ -33,7 +33,7 @@ export type ShippingInfo = {
     city: string,
     state: string,
     country: string,
-    pinCode: number,
+    pinCode: string,
 }
 
 export type Order = {
