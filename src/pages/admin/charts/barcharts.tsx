@@ -1,27 +1,13 @@
-import { Navigate } from "react-router-dom";
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { BarChart } from "../../../components/admin/Charts";
 import { useBarQuery } from "../../../redux/api/dashboard";
-import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CustomError } from "../../../types/api-types";
-import toast from "react-hot-toast";
 import { getLatestMonths } from "../../../utils/features";
-
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "Aug",
-  "Sept",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+import { Skeleton } from "../../../components/loader";
 
 const {last6Months, last12Months} = getLatestMonths();
 
@@ -44,7 +30,10 @@ const Barcharts = () => {
       <AdminSidebar />
       <main className="chart-container">
         <h1>Bar Charts</h1>
-        <section>
+        {
+          isLoading ? <Skeleton length={20} /> : (
+            <>
+              <section>
           <BarChart
             data_1={products}
             data_2={users}
@@ -70,6 +59,9 @@ const Barcharts = () => {
           />
           <h2>Orders throughout the year</h2>
         </section>
+            </>
+          )
+        }
       </main>
     </div>
   );
