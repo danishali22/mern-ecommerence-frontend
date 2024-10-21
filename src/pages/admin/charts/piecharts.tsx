@@ -12,11 +12,11 @@ const PieCharts = () => {
   const { data, isLoading, isError } = usePieQuery(user?._id!);
 
   const order = data?.data.orderFullfillment;
-  const categories = data?.data.productCategories || [];
-  const stock = data?.data.stockAvailability || [];
-  const revenue = data?.data.revenueDistribution || [];
-  const ageGroup = data?.data.usersAgeGroup || [];
-  const adminCustomer = data?.data.adminCustomer || [];
+  const categories = data?.data.productCategories;
+  const stock = data?.data.stockAvailability;
+  const revenue = data?.data.revenueDistribution;
+  const ageGroup = data?.data.usersAgeGroup;
+  const adminCustomer = data?.data.adminCustomer;
 
   if (isError) {
     return <Navigate to={"/admin/dashboard"} />;

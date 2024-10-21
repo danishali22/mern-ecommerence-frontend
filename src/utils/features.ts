@@ -23,7 +23,7 @@ export const responseToast = (res: ResType, navigate: NavigateFunction | null, u
     }
 }
 
-export const latestMonths = () => {
+export const getLatestMonths = () => {
     const currentDate = moment();
     currentDate.date(1);
 
