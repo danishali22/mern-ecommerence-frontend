@@ -100,6 +100,28 @@ $color3: rgb(0, 87, 158);
   }
 }
 
+.not-found{
+  height: 80vh;
+  @include flex(column);
+  >svg{
+    font-size: 5rem
+  }
+}
+
+.checkout-container{
+  max-width: 400px;
+  width: 100%;
+  margin: auto;
+  >form{
+    @include flex(column, flex-start, stretch, 2rem);
+    border-radius: 6px;
+    >button{
+      @include button(1rem, $color3, $color1);
+      font-size: 1.1rem;
+    }
+  }
+}
+
 .admin-container {
   @include grid(1fr 4fr, 2rem);
   height: 100vh;

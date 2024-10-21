@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { CartItem } from "../../types/types";
+import type { CartItem, ShippingInfo } from "../../types/types";
 
 const initialState = {
   loading: false,
@@ -54,6 +54,9 @@ export const cartReducer = createSlice({
     discountApplied: (state, action: PayloadAction<number>) => {
       state.discount = action.payload;
     },
+    saveShippingInfo: (state, action: PayloadAction<ShippingInfo>) => {
+      state.shippingInfo = action.payload;
+    }
   },
 });
 
