@@ -11,6 +11,9 @@ import Table from "../../components/admin/DashboardTable";
 import { Skeleton } from "../../components/loader";
 import { useStatsQuery } from "../../redux/api/dashboard";
 import { RootState } from "../../redux/store";
+import { getLatestMonths } from "../../utils/features";
+
+const {last6Months} = getLatestMonths();
 
 const userImg =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJxA5cTf-5dh5Eusm0puHbvAhOrCRPtckzjA&usqp";
@@ -74,6 +77,7 @@ const Dashboard = () => {
                 <BarChart
                   data_2={stats?.chart.revenue!}
                   data_1={stats?.chart.order!}
+                  labels={last6Months}
                   title_1="Revenue"
                   title_2="Transaction"
                   bgColor_1="rgb(0, 115, 255)"
