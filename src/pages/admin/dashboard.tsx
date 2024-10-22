@@ -120,7 +120,7 @@ const Dashboard = () => {
                   <BiMaleFemale />
                 </p>
               </div>
-              <Table data={stats?.latestTransactions} />
+              <Table data={stats?.latestTransactions || []} />
             </section>
           </>
         )}

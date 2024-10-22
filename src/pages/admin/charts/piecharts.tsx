@@ -11,12 +11,18 @@ const PieCharts = () => {
   const { user } = useSelector((state: RootState) => state.userReducer);
   const { data, isLoading, isError } = usePieQuery(user?._id!);
 
-  const order = data?.data.orderFullfillment;
-  const categories = data?.data.productCategories;
-  const stock = data?.data.stockAvailability;
-  const revenue = data?.data.revenueDistribution;
-  const ageGroup = data?.data.usersAgeGroup;
-  const adminCustomer = data?.data.adminCustomer;
+  const order = data?.data.orderFullfillment || { processing: 0, shipped: 0, delivered: 0 };
+  const categories = data?.data.productCategories || [];
+  const stock = data?.data.stockAvailability || { inStock: 0, outStock: 0 };
+  const revenue = data?.data.revenueDistribution || {
+    netMargin: 0,
+    discount: 0,
+    productionCost: 0,
+    burnt: 0,
+    marketingCost: 0,
+  }; // Default values
+  const ageGroup = data?.data.usersAgeGroup || { teen: 0, adult: 0, old: 0 };
+  const adminCustomer = data?.data.adminCustomer || { admin: 0, customer: 0 }; 
 
   if (isError) {
     return <Navigate to={"/admin/dashboard"} />;
@@ -36,9 +42,9 @@ const PieCharts = () => {
                 <PieChart
                   labels={["Processing", "Shipped", "Delivered"]}
                   data={[
-                    order?.processing!,
-                    order?.shipped!,
-                    order?.delivered!,
+                    order?.processing,
+                    order?.shipped,
+                    order?.delivered
                   ]}
                   backgroundColor={[
                     `hsl(110,80%, 80%)`,
@@ -73,7 +79,7 @@ const PieCharts = () => {
               <div>
                 <DoughnutChart
                   labels={["In Stock", "Out Of Stock"]}
-                  data={[stock.inStock!, stock?.outStock!]}
+                  data={[stock.inStock, stock.outStock]}
                   backgroundColor={["hsl(269,80%,40%)", "rgb(53, 162, 255)"]}
                   legends={false}
                   offset={[0, 80]}
@@ -122,7 +128,11 @@ const PieCharts = () => {
                     "Adult (20-40)",
                     "Older (above 40)",
                   ]}
-                  data={[ageGroup.teen, ageGroup.adult, ageGroup.old]}
+                  data={[
+                    ageGroup.teen,
+                    ageGroup.adult,
+                    ageGroup.old,
+                  ]}
                   backgroundColor={[
                     `hsl(10, ${80}%, 80%)`,
                     `hsl(10, ${80}%, 50%)`,
@@ -138,7 +148,10 @@ const PieCharts = () => {
               <div>
                 <DoughnutChart
                   labels={["Admin", "Customers"]}
-                  data={[adminCustomer.admin, adminCustomer.customer]}
+                  data={[
+                    adminCustomer.admin,
+                    adminCustomer.customer,
+                  ]}
                   backgroundColor={[`hsl(335, 100%, 38%)`, "hsl(44, 98%, 50%)"]}
                   offset={[0, 50]}
                 />

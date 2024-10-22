@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { CartItem, ShippingInfo } from "../../types/types";
+import { CartReducerInitialState } from "../../types/reducer-types";
 
-const initialState = {
+const initialState: CartReducerInitialState = {
   loading: false,
   cartItems: [],
   subtotal: 0,
@@ -17,6 +18,7 @@ const initialState = {
     pinCode: "",
   },
 };
+
 
 export const cartReducer = createSlice({
   name: "cartReducer",

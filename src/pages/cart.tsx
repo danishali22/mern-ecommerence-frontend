@@ -48,7 +48,7 @@ const Cart = () => {
 
     const timeOutId = setTimeout(() => {
       axios
-        .get(`${server}/api/v1/payment/discount?code=${couponCode}`, CancelToken)
+        .get(`${server}/api/v1/payment/discount?code=${couponCode}`, { cancelToken: CancelToken })
         .then((res) => {
           dispatch(discountApplied(res.data.discount));
           setIsValidCouponCode(true);
