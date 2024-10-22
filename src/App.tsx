@@ -1,15 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { lazy, Suspense, useEffect } from "react";
-import { Skeleton } from "./components/loader";
-import Header from "./components/header";
-import { Toaster } from "react-hot-toast";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
+import { lazy, Suspense, useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { userExists, userNotExists } from "./redux/reducer/userReducer";
-import { getUser } from "./redux/api/userApi";
-import { UserReducerInitialState } from "./types/reducer-types";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Header from "./components/header";
+import Loader, { Skeleton } from "./components/loader";
 import ProtectedRoute from "./components/protected-route";
+import { auth } from "./firebase";
+import { getUser } from "./redux/api/userApi";
+import { userExists, userNotExists } from "./redux/reducer/userReducer";
+import { UserReducerInitialState } from "./types/reducer-types";
 
 const Home = lazy(() => import("./pages/home"));
 const Search = lazy(() => import("./pages/search"));
@@ -59,7 +59,7 @@ const App = () => {
   }, []);
 
   return loading ? (
-    <Skeleton length={10} />
+    <Loader />
   ) : (
     <Router>
       {/* Header  */}
