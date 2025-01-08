@@ -4,14 +4,37 @@ import { useProductDetailsQuery } from "../redux/api/productApi"
 import { useState } from "react";
 import { CarouselButtonType, MyntraCarousel, Slider } from "6pp";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
+import RatingsComponent from "../components/ratings";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/reducer/cartItemReducer";
 
 const ProductDetails = () => {
   const params = useParams();
+  const dispatch = useDispatch();
+
   const {data, isLoading, isError, error} = useProductDetailsQuery(params.id!);
-  console.log(data);
 
   const [carouselOpen, setCarouselOpen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
+  const increment = () => {
+    if (data?.product?.stock === quantity)
+      return toast.error(`${data?.product?.stock} available only`);
+
+    setQuantity((prev) => prev + 1);
+  }
+
+  const decrement = () => {
+    setQuantity((prev) => prev - 1);
+  }
+
+  const addToCartHandler = (cartItem: CartItem) => {
+    if (cartItem.stock < 1) return toast.error("Out of Stock");
+
+    dispatch(addToCart(cartItem));
+    toast.success("Added to cart");
+  };
 
   return (
     <div className="product-details">
@@ -43,9 +66,30 @@ const ProductDetails = () => {
             </section>
             <section>
               <h1> {data?.product?.name} </h1>
-              <p>{data?.product?.category}</p>
-              <p>{data?.product?.ratings}</p>
-              <p>{data?.product?.price}</p>
+              <code>{data?.product?.category}</code>
+              <h3>Rs {data?.product?.price}</h3>
+              <RatingsComponent value={data?.product?.ratings || 0} />
+              <article>
+                <div>
+                  <button onClick={decrement}>-</button>
+                  <span>{quantity}</span>
+                  <button onClick={increment}>+</button>
+                </div>
+                <button
+                  onClick={() =>
+                    addToCartHandler({
+                      productId: data?.product?._id!,
+                      name: data?.product?.name!,
+                      price: data?.product?.price!,
+                      stock: data?.product?.stock!,
+                      quantity,
+                      photo: data?.product?.photos[0].url || "",
+                    })
+                  }
+                >
+                  Add To Cart
+                </button>
+              </article>
               <p>{data?.product?.description}</p>
             </section>
           </main>
