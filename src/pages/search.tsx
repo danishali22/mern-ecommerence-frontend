@@ -99,7 +99,7 @@ const Search = () => {
               <ProductCard
                 key={i._id}
                 productId={i._id}
-                photo={i.photo}
+                photos={i.photos}
                 name={i.name}
                 price={i.price}
                 stock={i.stock}

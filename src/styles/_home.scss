@@ -69,7 +69,7 @@
         left: 0;
         @include flex;
         opacity: 0;
-        button{
+        button, a{
             @include flex;
             @include square(3rem);
             border-radius: 100%;
