@@ -6,7 +6,6 @@ import AdminSidebar from "../../components/admin/AdminSidebar";
 import TableHOC from "../../components/admin/TableHOC";
 import { useAllProductsQuery } from "../../redux/api/productApi";
 import toast from "react-hot-toast";
-import { server } from "../../redux/store";
 import { CustomError } from "../../types/api-types";
 import { useSelector } from "react-redux";
 import { UserReducerInitialState } from "../../types/reducer-types";
@@ -57,7 +56,7 @@ const Products = () => {
     if (data)
       setRows(
         data.data.map((i) => ({
-          photo: <img src={`${server}/${i.photo}`} alt={i.name}></img>,
+          photo: <img src={`${i.photos?.[0]?.url}`} alt={i.name}></img>,
           name: i.name,
           price: i.price,
           stock: i.stock,

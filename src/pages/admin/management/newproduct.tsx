@@ -5,59 +5,54 @@ import { UserReducerInitialState } from "../../../types/reducer-types";
 import { useNewProductMutation } from "../../../redux/api/productApi";
 import { useNavigate } from "react-router-dom";
 import { responseToast } from "../../../utils/features";
+import { useFileHandler } from "6pp";
 
 const NewProduct = () => {
   const {user} = useSelector(
     (state: { userReducer: UserReducerInitialState }) => state.userReducer
   );
-  
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [price, setPrice] = useState<number>(1000);
   const [stock, setStock] = useState<number>(1);
-  const [photoPrev, setPhotoPrev] = useState<string>("");
-  const [photo, setPhoto] = useState<File>();
 
   const navigate = useNavigate();
 
   const [newProduct] = useNewProductMutation();
 
+  const photos = useFileHandler("multiple", 10, 5);
+
   const submitHandler = async (e:  ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(!name || !category || !price || !stock || !photo) return;
+    setIsLoading(true);
+    try {
+      if (!name || !category || !price || !stock) return;
 
-    const formData = new FormData();
+      const formData = new FormData();
 
-    formData.set("name", name);
-    formData.set("category", category);
-    formData.set("photo", photo);
-    formData.set("price", price.toString());
-    formData.set("stock", stock.toString());
+      formData.set("name", name);
+      formData.set("category", category);
+      formData.set("price", price.toString());
+      formData.set("stock", stock.toString());
 
-    const res = await newProduct({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-      id: user?._id!,
-      formData: formData,
-    });
-    responseToast(res, navigate, "/admin/product");
-  }
+      photos.file.forEach((file) => {
+        formData.append("photos", file);
+      });
 
-  const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const file: File | undefined = e.target.files?.[0];
-
-    const reader: FileReader = new FileReader();
-
-    if (file) {
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        if (typeof reader.result === "string") {
-          setPhotoPrev(reader.result);
-          setPhoto(file);
-        }
-      };
+      const res = await newProduct({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+        id: user?._id!,
+        formData: formData,
+      });
+      responseToast(res, navigate, "/admin/product");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
-  };
-  
+  }
 
   return (
     <div className="admin-container">
@@ -109,12 +104,26 @@ const NewProduct = () => {
             </div>
 
             <div>
-              <label>Photo</label>
-              <input type="file" onChange={changeImageHandler} required />
+              <label>Photos</label>
+              <input
+                required
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={photos.changeHandler}
+              />
             </div>
 
-            {photoPrev && <img src={photoPrev} alt="New Image" />}
-            <button type="submit">Create</button>
+            {photos.error && <p>{photos.error}</p>}
+
+            {photos.preview &&
+              photos.preview.map((img, i) => (
+                <img key={i} src={img} alt="New Image" />
+              ))}
+
+            <button disabled={isLoading} type="submit">
+              Create
+            </button>
           </form>
         </article>
       </main>

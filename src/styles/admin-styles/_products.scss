@@ -30,6 +30,9 @@
   position: absolute;
   top: -1.2rem;
   right: -1.2rem;
+  &:hover{
+    background-color: red;
+  }
 }
 
 .product-management {
