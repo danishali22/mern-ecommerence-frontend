@@ -8,12 +8,13 @@ import { responseToast } from "../../../utils/features";
 import { useFileHandler } from "6pp";
 
 const NewProduct = () => {
-  const {user} = useSelector(
+  const { user } = useSelector(
     (state: { userReducer: UserReducerInitialState }) => state.userReducer
   );
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [price, setPrice] = useState<number>(1000);
   const [stock, setStock] = useState<number>(1);
@@ -24,15 +25,16 @@ const NewProduct = () => {
 
   const photos = useFileHandler("multiple", 10, 5);
 
-  const submitHandler = async (e:  ChangeEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      if (!name || !category || !price || !stock) return;
+      if (!name || !description || !category || !price || !stock) return;
 
       const formData = new FormData();
 
       formData.set("name", name);
+      formData.set("description", description);
       formData.set("category", category);
       formData.set("price", price.toString());
       formData.set("stock", stock.toString());
@@ -52,7 +54,7 @@ const NewProduct = () => {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="admin-container">
@@ -70,6 +72,15 @@ const NewProduct = () => {
                 onChange={(e) => setName(e.target.value)}
                 required
               />
+            </div>
+            <div>
+              <label>Description</label>
+              <textarea
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              ></textarea>
             </div>
             <div>
               <label>Price</label>
@@ -116,10 +127,18 @@ const NewProduct = () => {
 
             {photos.error && <p>{photos.error}</p>}
 
-            {photos.preview &&
-              photos.preview.map((img, i) => (
-                <img key={i} src={img} alt="New Image" />
-              ))}
+            {photos.preview && (
+              <div style={{ display: "flex", gap: "1rem", overflowX: "auto" }}>
+                {photos.preview.map((img, i) => (
+                  <img
+                    style={{ width: 100, height: 100, objectFit: "cover" }}
+                    key={i}
+                    src={img}
+                    alt="New Image"
+                  />
+                ))}
+              </div>
+            )}
 
             <button disabled={isLoading} type="submit">
               Create

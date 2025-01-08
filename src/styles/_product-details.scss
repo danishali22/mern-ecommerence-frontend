@@ -1,0 +1,30 @@
+.product-details {
+  padding: 4rem;
+
+  > main {
+    display: flex;
+
+    > section {
+      &:first-of-type {
+        width: 40%;
+        height: 60vh;
+      }
+      &:last-of-type {
+        width: 60%;
+        min-height: 80vh;
+        padding: 4rem;
+      }
+    }
+  }
+
+  .carousel-btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 10px;
+    padding: 0.5rem;
+    border: none;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+}

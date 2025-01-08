@@ -14,6 +14,7 @@ import { UserReducerInitialState } from "./types/reducer-types";
 const Home = lazy(() => import("./pages/home"));
 const Search = lazy(() => import("./pages/search"));
 const Cart = lazy(() => import("./pages/cart"));
+const ProductDetails = lazy(() => import("./pages/product-details"));
 const Login = lazy(() => import("./pages/login"));
 const Shipping = lazy(() => import("./pages/shipping"));
 const Checkout = lazy(() => import("./pages/checkout"));
@@ -69,6 +70,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
 
           {/* Not Logged In User Route  */}
           <Route

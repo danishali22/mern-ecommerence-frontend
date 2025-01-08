@@ -1,45 +1,45 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useFileHandler } from "6pp";
+import { FormEvent, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
-import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { useSelector } from "react-redux";
-import { UserReducerInitialState } from "../../../types/reducer-types";
-import { useNavigate, useParams, Navigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import AdminSidebar from "../../../components/admin/AdminSidebar";
+import { Skeleton } from "../../../components/loader";
 import {
   useDeleteProductMutation,
   useProductDetailsQuery,
   useUpdateProductMutation,
 } from "../../../redux/api/productApi";
-import { server } from "../../../redux/store";
+// import { UserReducerInitialState } from "../../../types/reducer-types";
+import { RootState } from "../../../redux/store";
 import { responseToast } from "../../../utils/features";
-import { Skeleton } from "../../../components/loader";
-import { useFileHandler } from "6pp";
 
 const Productmanagement = () => {
-  const { user } = useSelector(
-    (state: { userReducer: UserReducerInitialState }) => state.userReducer
-  );
+  const { user } = useSelector((state: RootState) => state.userReducer);
 
   const params = useParams();
   const navigate = useNavigate();
 
-  const { data: productDetails, isLoading, isError } = useProductDetailsQuery(
-    params.id!
-  );
+  const { data, isLoading, isError } = useProductDetailsQuery(params.id!);
 
-  const { name, category, photos, stock, price } = productDetails?.data || {
-    name: "",
-    category: "",
-    photos: [],
-    price: 0,
-    stock: 0,
-  };
+  const { price, photos, name, stock, category, description } =
+    data?.product || {
+      photos: [],
+      category: "",
+      name: "",
+      stock: 0,
+      price: 0,
+      description: "",
+    };
 
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [priceUpdate, setPriceUpdate] = useState<number>(price);
   const [stockUpdate, setStockUpdate] = useState<number>(stock);
   const [nameUpdate, setNameUpdate] = useState<string>(name);
   const [categoryUpdate, setCategoryUpdate] = useState<string>(category);
+  const [descriptionUpdate, setDescriptionUpdate] =
+    useState<string>(description);
 
   const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
@@ -48,30 +48,32 @@ const Productmanagement = () => {
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setBtnLoading(true);
-
     try {
-       const formData = new FormData();
+      const formData = new FormData();
 
-       if (nameUpdate) formData.set("name", nameUpdate);
-       if (categoryUpdate) formData.set("category", categoryUpdate);
-       if (priceUpdate) formData.set("price", priceUpdate.toString());
-       if (stockUpdate !== undefined)
-         formData.set("stock", stockUpdate.toString());
+      if (nameUpdate) formData.set("name", nameUpdate);
+      if (descriptionUpdate) formData.set("description", descriptionUpdate);
+      if (priceUpdate) formData.set("price", priceUpdate.toString());
+      if (stockUpdate !== undefined)
+        formData.set("stock", stockUpdate.toString());
 
-       if (photosFiles.file && photosFiles.file.length > 0) {
-         photosFiles.file.forEach((file) => {
-           formData.append("photos", file);
-         });
-       }
+      if (categoryUpdate) formData.set("category", categoryUpdate);
 
-       const res = await updateProduct({
-         userId: user?._id!,
-         productId: productDetails?.data._id!,
-         formData,
-       });
+      if (photosFiles.file && photosFiles.file.length > 0) {
+        photosFiles.file.forEach((file) => {
+          formData.append("photos", file);
+        });
+      }
 
-       responseToast(res, navigate, "/admin/product");
+      const res = await updateProduct({
+        formData,
+        userId: user?._id!,
+        productId: data?.product._id!,
+      });
+
+      responseToast(res, navigate, "/admin/product");
     } catch (error) {
       console.log(error);
     } finally {
@@ -79,26 +81,26 @@ const Productmanagement = () => {
     }
   };
 
-  const deleteHandle = async () => {
+  const deleteHandler = async () => {
     const res = await deleteProduct({
       userId: user?._id!,
-      productId: productDetails?.data._id!,
+      productId: data?.product._id!,
     });
+
     responseToast(res, navigate, "/admin/product");
   };
 
-
   useEffect(() => {
-    if (productDetails) {
-      setNameUpdate(productDetails?.data.name!);
-      setCategoryUpdate(productDetails?.data.category!);
-      setPriceUpdate(productDetails?.data.price!);
-      setStockUpdate(productDetails?.data.stock!);
+    if (data) {
+      setNameUpdate(data.product.name);
+      setPriceUpdate(data.product.price);
+      setStockUpdate(data.product.stock);
+      setCategoryUpdate(data.product.category);
+      setDescriptionUpdate(data.product.description);
     }
-  }, [productDetails]);
+  }, [data]);
 
-  
-  if(isError) return <Navigate to={"/404"} />;
+  if (isError) return <Navigate to={"/404"} />;
 
   return (
     <div className="admin-container">
@@ -109,7 +111,7 @@ const Productmanagement = () => {
         ) : (
           <>
             <section>
-              <strong>ID - {productDetails?.data._id}</strong>
+              <strong>ID - {data?.product._id}</strong>
               <img src={photos[0]?.url} alt="Product" />
               <p>{name}</p>
               {stock > 0 ? (
@@ -120,7 +122,7 @@ const Productmanagement = () => {
               <h3>Rs {price}</h3>
             </section>
             <article>
-              <button className="product-delete-btn" onClick={deleteHandle}>
+              <button className="product-delete-btn" onClick={deleteHandler}>
                 <FaTrash />
               </button>
               <form onSubmit={submitHandler}>
@@ -132,6 +134,16 @@ const Productmanagement = () => {
                     placeholder="Name"
                     value={nameUpdate}
                     onChange={(e) => setNameUpdate(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label>Description</label>
+                  <textarea
+                    required
+                    placeholder="Description"
+                    value={descriptionUpdate}
+                    onChange={(e) => setDescriptionUpdate(e.target.value)}
                   />
                 </div>
                 <div>
@@ -189,7 +201,10 @@ const Productmanagement = () => {
                     ))}
                   </div>
                 )}
-                <button disabled={btnLoading} type="submit">Update</button>
+
+                <button disabled={btnLoading} type="submit">
+                  Update
+                </button>
               </form>
             </article>
           </>
