@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { Skeleton } from "../components/loader"
 import { useProductDetailsQuery } from "../redux/api/productApi"
 import { useState } from "react";
@@ -8,15 +8,18 @@ import RatingsComponent from "../components/ratings";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/reducer/cartItemReducer";
+import { CartItem } from "../types/types";
 
 const ProductDetails = () => {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const {data, isLoading, isError, error} = useProductDetailsQuery(params.id!);
+  const {data, isLoading, isError} = useProductDetailsQuery(params.id!);
 
   const [carouselOpen, setCarouselOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
+
+  if(isError) return <Navigate to="/404" />
 
   const increment = () => {
     if (data?.product?.stock === quantity)
@@ -65,8 +68,8 @@ const ProductDetails = () => {
               )}
             </section>
             <section>
-              <h1> {data?.product?.name} </h1>
               <code>{data?.product?.category}</code>
+              <h1> {data?.product?.name} </h1>
               <h3>Rs {data?.product?.price}</h3>
               <RatingsComponent value={data?.product?.ratings || 0} />
               <article>
