@@ -25,6 +25,7 @@ const NotFound = lazy(() => import("./pages/not-found"));
 // Admin
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
 const Products = lazy(() => import("./pages/admin/products"));
+const Discount = lazy(() => import("./pages/admin/discount"));
 const Customers = lazy(() => import("./pages/admin/customers"));
 const Transaction = lazy(() => import("./pages/admin/transaction"));
 const Barcharts = lazy(() => import("./pages/admin/charts/barcharts"));
@@ -104,6 +105,7 @@ const App = () => {
           >
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/product" element={<Products />} />
+            <Route path="/admin/discount" element={<Discount />} />
             <Route path="/admin/customer" element={<Customers />} />
             <Route path="/admin/transaction" element={<Transaction />} />
             {/* Charts */}
