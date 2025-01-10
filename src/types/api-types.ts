@@ -133,15 +133,29 @@ export type AllCouponResponse = {
   data: CouponType[];
 };
 
+
+export type GetCouponRequest = {
+  userId: string;
+  couponId: string;
+};
+
+export type CouponDetailsResponse = {
+  success: boolean;
+  data: CouponType;
+  message: string;
+};
+
 export type NewCouponRequest = {
   id: string;
-  formData: FormData;
+  code: string;
+  amount: number;
 };
 
 export type UpdateCouponRequest = {
   userId: string;
   couponId: string;
-  formData: FormData;
+  code: string;
+  amount: number;
 };
 
 export type UpdateCouponResponse = {

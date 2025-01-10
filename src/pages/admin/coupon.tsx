@@ -1,15 +1,15 @@
-import { useFetchData } from "6pp";
 import { ReactElement, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { FaPlus } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Column } from "react-table";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import TableHOC from "../../components/admin/TableHOC";
+import toast from "react-hot-toast";
+import { CustomError } from "../../types/api-types";
+import { useSelector } from "react-redux";
+import { UserReducerInitialState } from "../../types/reducer-types";
 import { Skeleton } from "../../components/loader";
-import { RootState, server } from "../../redux/store";
-import { AllDiscountResponse } from "../../types/api-types";
+import { useAllCouponsQuery } from "../../redux/api/couponApi";
 
 interface DataType {
   code: string;
@@ -23,7 +23,6 @@ const columns: Column<DataType>[] = [
     Header: "Id",
     accessor: "_id",
   },
-
   {
     Header: "Code",
     accessor: "code",
@@ -38,51 +37,50 @@ const columns: Column<DataType>[] = [
   },
 ];
 
-const Discount = () => {
-  const { user } = useSelector((state: RootState) => state.userReducer);
 
-  const {
-    data,
-    loading: isLoading,
-    error,
-  } = useFetchData<AllDiscountResponse>(
-    `${server}/api/v1/payment/coupon/all?id=${user?._id}`,
-    "discount-codes"
+const Coupon = () => {
+  const { user } = useSelector(
+    (state: { userReducer: UserReducerInitialState }) => state.userReducer
   );
+  // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+  const { data, isLoading, isError, error } = useAllCouponsQuery(user?._id!);
 
   const [rows, setRows] = useState<DataType[]>([]);
-
-  const Table = TableHOC<DataType>(
-    columns,
-    rows,
-    "dashboard-product-box",
-    "Products",
-    rows.length > 6
-  )();
-
-  if (error) toast.error(error);
 
   useEffect(() => {
     if (data)
       setRows(
-        data.coupons.map((i) => ({
+        data.data.map((i) => ({
           _id: i._id,
           code: i.code,
           amount: i.amount,
-          action: <Link to={`/admin/discount/${i._id}`}>Manage</Link>,
+          action: <Link to={`/admin/coupon/${i._id}`}>Manage</Link>,
         }))
       );
   }, [data]);
+
+  const err = error as CustomError;
+  if (isError) {
+    toast.error(err.data.message);
+  }
+
+  const Table = TableHOC<DataType>(
+    columns,
+    rows,
+    "dashboard-coupon-box",
+    "Coupons",
+    rows.length > 6
+  )();
 
   return (
     <div className="admin-container">
       <AdminSidebar />
       <main>{isLoading ? <Skeleton length={20} /> : Table}</main>
-      <Link to="/admin/discount/new" className="create-product-btn">
+      <Link to="/admin/coupon/new" className="create-product-btn">
         <FaPlus />
       </Link>
     </div>
   );
 };
 
-export default Discount;
+export default Coupon;

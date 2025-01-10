@@ -25,7 +25,7 @@ const NotFound = lazy(() => import("./pages/not-found"));
 // Admin
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
 const Products = lazy(() => import("./pages/admin/products"));
-const Discount = lazy(() => import("./pages/admin/discount"));
+const CouponPage = lazy(() => import("./pages/admin/coupon"));
 const Customers = lazy(() => import("./pages/admin/customers"));
 const Transaction = lazy(() => import("./pages/admin/transaction"));
 const Barcharts = lazy(() => import("./pages/admin/charts/barcharts"));
@@ -35,8 +35,12 @@ const Coupon = lazy(() => import("./pages/admin/apps/coupon"));
 const Stopwatch = lazy(() => import("./pages/admin/apps/stopwatch"));
 const Toss = lazy(() => import("./pages/admin/apps/toss"));
 const NewProduct = lazy(() => import("./pages/admin/management/newproduct"));
+const NewCoupon = lazy(() => import("./pages/admin/management/newcoupon"));
 const ProductManagement = lazy(
   () => import("./pages/admin/management/productmanagement")
+);
+const CouponManagement = lazy(
+  () => import("./pages/admin/management/couponmanagement")
 );
 const TransactionManagement = lazy(
   () => import("./pages/admin/management/transactionmanagement")
@@ -105,7 +109,7 @@ const App = () => {
           >
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/product" element={<Products />} />
-            <Route path="/admin/discount" element={<Discount />} />
+            <Route path="/admin/coupon" element={<CouponPage />} />
             <Route path="/admin/customer" element={<Customers />} />
             <Route path="/admin/transaction" element={<Transaction />} />
             {/* Charts */}
@@ -119,8 +123,10 @@ const App = () => {
 
             {/* Management */}
             <Route path="/admin/product/new" element={<NewProduct />} />
-
             <Route path="/admin/product/:id" element={<ProductManagement />} />
+
+            <Route path="/admin/coupon/new" element={<NewCoupon />} />
+            <Route path="/admin/coupon/:id" element={<CouponManagement />} />
 
             <Route
               path="/admin/transaction/:id"

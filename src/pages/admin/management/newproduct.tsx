@@ -44,8 +44,7 @@ const NewProduct = () => {
       });
 
       const res = await newProduct({
-        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        id: user?._id!,
+        id: user?._id || "",
         formData: formData,
       });
       responseToast(res, navigate, "/admin/product");
