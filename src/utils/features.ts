@@ -46,3 +46,8 @@ export const getLatestMonths = () => {
         last6Months,last12Months
     };
 }
+
+export const transformImage = (url: string, width=300) => {
+    const newUrl = url.replace("upload/", `upload/dpr_auto/w_${width}/`);
+    return newUrl;
+}

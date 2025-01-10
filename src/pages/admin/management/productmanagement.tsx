@@ -13,7 +13,7 @@ import {
 } from "../../../redux/api/productApi";
 // import { UserReducerInitialState } from "../../../types/reducer-types";
 import { RootState } from "../../../redux/store";
-import { responseToast } from "../../../utils/features";
+import { responseToast, transformImage } from "../../../utils/features";
 
 const Productmanagement = () => {
   const { user } = useSelector((state: RootState) => state.userReducer);
@@ -22,7 +22,7 @@ const Productmanagement = () => {
   const navigate = useNavigate();
 
   const { data, isLoading, isError } = useProductDetailsQuery(params.id!);
-
+  
   const { price, photos, name, stock, category, description } =
     data?.product || {
       photos: [],
@@ -112,7 +112,7 @@ const Productmanagement = () => {
           <>
             <section>
               <strong>ID - {data?.product._id}</strong>
-              <img src={photos[0]?.url} alt="Product" />
+              <img src={transformImage(photos[0]?.url)} alt="Product" />
               <p>{name}</p>
               {stock > 0 ? (
                 <span className="green">{stock} Available</span>

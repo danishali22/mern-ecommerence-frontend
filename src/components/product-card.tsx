@@ -1,6 +1,7 @@
 import { FaExpandAlt, FaPlus } from "react-icons/fa";
 import { CartItem } from "../types/types";
 import { Link } from "react-router-dom";
+import { transformImage } from "../utils/features";
 
 type ProductProps = {
   productId: string;
@@ -24,13 +25,20 @@ const ProductCard = ({
 }: ProductProps) => {
   return (
     <div className="product-card">
-      <img src={`${photos?.[0]?.url}`} alt={name} />
+      <img src={transformImage(`${photos?.[0]?.url}`)} alt={name} />
       <p>{name}</p>
       <span>Rs {price}</span>
       <div>
         <button
           onClick={() =>
-            handler({ productId, name, photo: photos[0].url, price, stock, quantity: 1 })
+            handler({
+              productId,
+              name,
+              photo: photos[0].url,
+              price,
+              stock,
+              quantity: 1,
+            })
           }
         >
           <FaPlus />
