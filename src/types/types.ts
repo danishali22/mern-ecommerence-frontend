@@ -12,6 +12,7 @@ export type Product = {
   _id: string;
   name: string;
   description: string;
+  numOfReviews: number;
   photos: {
     url: string;
     public_id: string;
