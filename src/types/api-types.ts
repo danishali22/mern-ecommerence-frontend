@@ -90,6 +90,11 @@ export type NewReviewRequest = {
     productId: string,
 }
 
+export type DeleteReviewRequest = {
+    userId?: string,
+    reviewId: string,
+}
+
 export type NewProductRequest = {
     id: string,
     formData: FormData,
