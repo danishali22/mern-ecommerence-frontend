@@ -22,6 +22,18 @@ export type Product = {
   stock: number;
 };
 
+export type Review = {
+  _id: string;
+  rating: number;
+  comment: string;
+  product: string;
+  user: {
+    _id: string;
+    name: string;
+    photo: string;
+  },
+}
+
 export type CartItem = {
   productId: string;
   name: string;

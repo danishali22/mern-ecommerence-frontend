@@ -2,9 +2,11 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   AllCategoriesResponse,
   AllProductsResponse,
+  AllReviewsResponse,
   DeleteProductRequest,
   MessageResponse,
   NewProductRequest,
+  NewReviewRequest,
   ProductDetailsResponse,
   SearchProductsRequest,
   SearchProductsResponse,
@@ -27,6 +29,10 @@ export const productApi = createApi({
       query: (id) => `admin-products/?id=${id}`,
       providesTags: ["product"],
     }),
+    allReviewsOfProduct: builder.query<AllReviewsResponse, string>({
+      query: (productId) => `${productId}/reviews`,
+      providesTags: ["product"],
+    }),
     categrories: builder.query<AllCategoriesResponse, string>({
       query: () => "categories",
       providesTags: ["product"],
@@ -46,6 +52,17 @@ export const productApi = createApi({
         return base;
       },
       providesTags: ["product"],
+    }),
+    newReview: builder.mutation<MessageResponse, NewReviewRequest>({
+      query: ({ rating, comment, userId, productId }) => ({
+        url: `${productId}/review/new?id=${userId}`,
+        method: "POST",
+        body: { rating, comment },
+        headers: {
+          "Content-Type": "application/json",
+        }
+      }),
+      invalidatesTags: ["product"],
     }),
     newProduct: builder.mutation<MessageResponse, NewProductRequest>({
       query: ({ id, formData }) => ({
@@ -80,8 +97,10 @@ export const productApi = createApi({
 export const {
   useLatestProductsQuery,
   useAllProductsQuery,
+  useAllReviewsOfProductQuery,
   useCategroriesQuery,
   useSearchProductsQuery,
+  useNewReviewMutation,
   useNewProductMutation,
   useProductDetailsQuery,
   useUpdateProductMutation,
