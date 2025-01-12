@@ -18,8 +18,10 @@ const Search = () => {
     if (cartItem.stock < 1) return toast.error(`${cartItem.name} is out of stock`);
     dispatch(addToCart(cartItem));
     toast.success(`${cartItem.name} is added to Cart`);
-  
   };
+
+  
+
   const { data, isError, isLoading, error } = useCategroriesQuery("");
 
   const err = error as CustomError;
