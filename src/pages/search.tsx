@@ -10,17 +10,19 @@ import { Skeleton } from "../components/loader";
 import { CartItem } from "../types/types";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/reducer/cartItemReducer";
+import { useSearchParams } from "react-router-dom";
 
 
 const Search = () => {
+
+  const searchQuery = useSearchParams()[0];
+
   const dispatch = useDispatch();
   const addToCartHandler = (cartItem: CartItem) => {
     if (cartItem.stock < 1) return toast.error(`${cartItem.name} is out of stock`);
     dispatch(addToCart(cartItem));
     toast.success(`${cartItem.name} is added to Cart`);
   };
-
-  
 
   const { data, isError, isLoading, error } = useCategroriesQuery("");
 
@@ -31,7 +33,7 @@ const Search = () => {
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(searchQuery.get("category") || "");
   const [maxPrice, setMaxPrice] = useState(10000);
   const [page, setPage] = useState(1);
 
