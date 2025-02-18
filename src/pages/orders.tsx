@@ -95,7 +95,7 @@ const Orders = () => {
   )();
 
   return (
-    <div className="container">
+    <div className="container" style={{height: "60vh"}}>
       <h1>My Orders</h1>
       <main>{isLoading ? <Skeleton length={20}/> : Table}</main>
     </div>

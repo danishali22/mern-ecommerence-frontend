@@ -73,7 +73,7 @@ const CheckoutForm = () => {
     setIsProcessing(false);
   };
   return (
-    <div className="checkout-container">
+    <div className="checkout-container" style={{height: "80vh"}}>
       <form onSubmit={submitHandler}>
         <PaymentElement />
         <button>{isProcessing ? "Processing" : "Pay"}</button>
