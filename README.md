@@ -2,8 +2,6 @@
 
 A scalable, performant, and modern e-commerce frontend built with **React.js**, **TypeScript**, **Redux Toolkit**, and **Vite**, integrated with **Firebase**, **Stripe**, **Cloudinary**, and **Docker**.
 
-![UI Banner](https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200\&auto=format\&fit=crop\&q=80)
-
 ---
 
 ## ✨ Key Features
